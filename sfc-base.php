@@ -4,7 +4,7 @@
  */
 
 // Load the textdomain
-load_plugin_textdomain('sfc', false, dirname(plugin_basename(__FILE__)));
+load_plugin_textdomain('sfc', false, dirname(plugin_basename(__FILE__)) . '/languages');
 
 global $sfc_plugin_list;
 $sfc_plugin_list = array(
