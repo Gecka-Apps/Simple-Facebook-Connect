@@ -95,7 +95,7 @@ function sfc_settings_link($links) {
 add_action('admin_init', 'sfc_admin_init',9); // 9 to force it first, subplugins should use default
 function sfc_admin_init(){
 	$options = get_option('sfc_options');
-	if (empty($options['api_key']) || empty($options['app_secret']) || empty($options['appid'])) {
+	if (empty($options['app_secret']) || empty($options['appid'])) {
 		add_action('admin_notices', create_function( '', "echo '<div class=\"error\"><p>".sprintf(__('Simple Facebook Connect needs configuration information on its <a href="%s">settings</a> page.', 'sfc'), admin_url('options-general.php?page=sfc'))."</p></div>';" ) );
 	} else {
 		add_action('admin_print_footer_scripts','sfc_add_base_js',20);
@@ -103,7 +103,6 @@ function sfc_admin_init(){
 	wp_enqueue_script('jquery');
 	register_setting( 'sfc_options', 'sfc_options', 'sfc_options_validate' );
 	add_settings_section('sfc_main', __('Main Settings', 'sfc'), 'sfc_section_text', 'sfc');
-	if (!defined('SFC_API_KEY')) add_settings_field('sfc_api_key', __('Facebook API Key', 'sfc'), 'sfc_setting_api_key', 'sfc', 'sfc_main');
 	if (!defined('SFC_APP_SECRET')) add_settings_field('sfc_app_secret', __('Facebook Application Secret', 'sfc'), 'sfc_setting_app_secret', 'sfc', 'sfc_main');
 	if (!defined('SFC_APP_ID')) add_settings_field('sfc_appid', __('Facebook Application ID', 'sfc'), 'sfc_setting_appid', 'sfc', 'sfc_main');
 	if (!defined('SFC_FANPAGE')) add_settings_field('sfc_fanpage', __('Facebook Fan Page', 'sfc'), 'sfc_setting_fanpage', 'sfc', 'sfc_main');
@@ -181,14 +180,14 @@ function sfc_options_page() {
 
 function sfc_section_text() {
 	$options = get_option('sfc_options');
-	if (empty($options['api_key']) || empty($options['app_secret']) || empty($options['appid'])) {
+	if (empty($options['app_secret']) || empty($options['appid'])) {
 ?>
 <p><?php _e('To connect your site to Facebook, you will need a Facebook Application.
-If you have already created one, please insert your API key, Application Secret, and Application ID below.', 'sfc'); ?></p>
-<p><strong><?php _e('Can\'t find your key?', 'sfc'); ?></strong></p>
+If you have already created one, please insert your Application Secret, and Application ID below.', 'sfc'); ?></p>
+<p><strong><?php _e('Can\'t find your Application Secret and ID?', 'sfc'); ?></strong></p>
 <ol>
 <li><?php _e('Get a list of your applications from here: <a target="_blank" href="http://www.facebook.com/developers/apps.php">Facebook Application List</a>', 'sfc'); ?></li>
-<li><?php _e('Select the application you want, then copy and paste the API key, Application Secret, and Application ID from there.', 'sfc'); ?></li>
+<li><?php _e('Select the application you want, then copy and paste the Application Secret, and Application ID from there.', 'sfc'); ?></li>
 </ol>
 
 <p><strong><?php _e('Haven\'t created an application yet?', 'sfc'); ?></strong> <?php _e('Don\'t worry, it\'s easy!', 'sfc'); ?></p>
@@ -201,32 +200,18 @@ If you have already created one, please insert your API key, Application Secret,
 <li><?php _e('You can find a walkthrough guide to configuring your Facebook application here: <a href="http://ottopress.com/2010/how-to-setup-your-facebook-connect-application/">How to Setup Your Facebook Application</a>', 'sfc'); ?></li>
 </ol>
 <?php
-		// look for an FBFoundations key if we dont have one of our own,
-		// to better facilitate switching from that plugin to this one.
-		$fbfoundations_settings = get_option('fbfoundations_settings');
-		if (isset($fbfoundations_settings['api_key']) && !empty($fbfoundations_settings['api_key'])) {
-			$options['api_key'] = $fbfoundations_settings['api_key'];
-		}
-	} else {
-	}
+	} 
 }
 
 // this will override all the main options if they are pre-defined
 function sfc_override_options($options) {
-	if (defined('SFC_API_KEY')) $options['api_key'] = SFC_API_KEY;
-	if (defined('SFC_APP_SECRET')) $options['app_secret'] = SFC_APP_SECRET;
+	if (defined('SFC_APP_SECRET')) $options['app_secret'] = $options['api_key'] = SFC_APP_SECRET;
 	if (defined('SFC_APP_ID')) $options['appid'] = SFC_APP_ID;
 	if (defined('SFC_FANPAGE')) $options['fanpage'] = SFC_FANPAGE;
 	return $options;
 }
 add_filter('option_sfc_options', 'sfc_override_options');
 
-function sfc_setting_api_key() {
-	if (defined('SFC_API_KEY')) return;
-	$options = get_option('sfc_options');
-	echo "<input type='text' id='sfcapikey' name='sfc_options[api_key]' value='{$options['api_key']}' size='40' /> ";
-	_e('(required)', 'sfc');
-}
 function sfc_setting_app_secret() {
 	if (defined('SFC_APP_SECRET')) return;
 	$options = get_option('sfc_options');
@@ -283,14 +268,7 @@ function sfc_subplugins() {
 
 // validate our options
 function sfc_options_validate($input) {
-	if (!defined('SFC_API_KEY')) {
-		// api keys are 32 bytes long and made of hex values
-		$input['api_key'] = trim($input['api_key']);
-		if(! preg_match('/^[a-f0-9]{32}$/i', $input['api_key'])) {
-		  $input['api_key'] = '';
-		}
-	}
-
+	
 	if (!defined('SFC_APP_SECRET')) {
 		// api keys are 32 bytes long and made of hex values
 		$input['app_secret'] = trim($input['app_secret']);
@@ -305,6 +283,11 @@ function sfc_options_validate($input) {
 		if(! preg_match('/^[0-9]+$/i', $input['appid'])) {
 		  $input['appid'] = '';
 		}
+		
+		/**
+		 * @todo remove all api_key refrences
+		 */
+		$input['api_key'] = $input['appid'];
 	}
 
 	if (!defined('SFC_FANPAGE')) {
