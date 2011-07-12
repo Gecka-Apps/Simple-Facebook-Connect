@@ -24,11 +24,11 @@ function sfc_publish_section_callback() {
 
 function sfc_publish_auto_callback() {
 	$options = get_option('sfc_options');
-	if (!$options['autopublish_app']) $options['autopublish_app'] = false;
-	if (!$options['autopublish_profile']) $options['autopublish_profile'] = false;
+	if ( empty($options['autopublish_app']) ) $options['autopublish_app'] = false;
+	if ( empty($options['autopublish_profile']) ) $options['autopublish_profile'] = false;
 	?>
 	<p><label>Automatically Publish to Facebook <?php
-	if ($options['fanpage']) echo 'Fan Page';
+	if ( !empty($options['fanpage']) && $options['fanpage'] ) echo 'Fan Page';
 	else echo 'Application';
 	?>: <input type="checkbox" name="sfc_options[autopublish_app]" value="1" <?php checked('1', $options['autopublish_app']); ?> /></label>
 	</p>
@@ -53,13 +53,13 @@ function sfc_publish_token_checks() {
 <p><?php _e('In order for SFC to be able to automatically publish to Facebook, it must retrieve and save "tokens" from Facebook. The status of each of these is given below.','sfc'); ?></p>
 <ul>
 <?php
-	if ($options['user'] && $options['access_token']) {
+	if ( !empty($options['user']) && !empty($options['access_token']) ) {
 		?><li style="background-color: #c3ff88; border-color: #8dff1c;"><?php _e('User ID and Access Token found! Automatic profile publishing is ready to go!', 'sfc'); ?></li><?php
 	} else {
 		?><li class="error"><?php _e('No User or Access Token found. Cannot autopublish to Facebook Profile. Try re-saving this page.', 'sfc'); ?></li><?php
 	}
 
-	if ($options['app_access_token']) {
+	if ( !empty($options['app_access_token']) ) {
 		?><li style="background-color: #c3ff88; border-color: #8dff1c;"><?php _e('Application Access Token found! Automatic application wall publishing is ready to go!', 'sfc'); ?></li><?php
 	} else {
 		?><li class="error"><?php _e('Application Access Token not found. Cannot autopublish to Facebook Application. Try re-saving this page.', 'sfc'); ?></li><?php

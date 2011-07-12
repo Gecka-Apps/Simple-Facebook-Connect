@@ -89,7 +89,7 @@ function sfc_share_section_callback() {
 
 function sfc_share_position() {
 	$options = get_option('sfc_options');
-	if (!$options['share_position']) $options['share_position'] = 'manual';
+	if ( empty($options['share_position']) ) $options['share_position'] = 'manual';
 	?>
 	<p><label><input type="radio" name="sfc_options[share_position]" value="before" <?php checked('before', $options['share_position']); ?> /> <?php _e('Before the content of your post', 'sfc'); ?></label></p>
 	<p><label><input type="radio" name="sfc_options[share_position]" value="after" <?php checked('after', $options['share_position']); ?> /> <?php _e('After the content of your post', 'sfc'); ?></label></p>
@@ -100,7 +100,7 @@ function sfc_share_position() {
 
 function sfc_share_type() {
 	$options = get_option('sfc_options');
-	if (!$options['share_type']) $options['share_type'] = 'box_count';
+	if ( empty($options['share_type']) ) $options['share_type'] = 'box_count';
 	?>
 	<table><tr><td style="width:140px;">
 	<div class="sfc_share_type_selector">

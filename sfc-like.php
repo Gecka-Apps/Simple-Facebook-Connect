@@ -85,7 +85,7 @@ function sfc_like_section_callback() {
 
 function sfc_like_position() {
 	$options = get_option('sfc_options');
-	if (!$options['like_position']) $options['like_position'] = 'manual';
+	if ( empty($options['like_position']) ) $options['like_position'] = 'manual';
 	?>
 	<ul>
 	<li><label><input type="radio" name="sfc_options[like_position]" value="before" <?php checked('before', $options['like_position']); ?> /> <?php _e('Before the content of your post', 'sfc'); ?></label></li>
@@ -98,7 +98,7 @@ function sfc_like_position() {
 
 function sfc_like_layout() {
 	$options = get_option('sfc_options');
-	if (!$options['like_layout']) $options['like_layout'] = 'standard';
+	if ( empty($options['like_layout']) ) $options['like_layout'] = 'standard';
 	?>
 	<ul>
 	<li><label><input type="radio" name="sfc_options[like_layout]" value="standard" <?php checked('standard', $options['like_layout']); ?> /> <?php _e('Standard', 'sfc'); ?></label></li>
@@ -110,7 +110,7 @@ function sfc_like_layout() {
 
 function sfc_like_action() {
 	$options = get_option('sfc_options');
-	if (!$options['like_action']) $options['like_action'] = 'like';
+	if ( empty($options['like_action']) ) $options['like_action'] = 'like';
 	?>
 	<ul>
 	<li><label><input type="radio" name="sfc_options[like_action]" value="like" <?php checked('like', $options['like_action']); ?> /> <?php _e('Like', 'sfc'); ?></label></li>
@@ -121,7 +121,7 @@ function sfc_like_action() {
 
 function sfc_like_send() {
 	$options = get_option('sfc_options');
-	if (!$options['like_send']) $options['like_send'] = 'false';
+	if ( empty($options['like_send']) ) $options['like_send'] = 'false';
 	?>
 	<ul>
 	<li><label><input type="radio" name="sfc_options[like_send]" value="true" <?php checked('true', $options['like_send']); ?> /> <?php _e('Enabled', 'sfc'); ?></label></li>

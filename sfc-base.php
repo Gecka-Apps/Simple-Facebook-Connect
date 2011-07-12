@@ -251,6 +251,12 @@ function sfc_plugins_text() {
 
 function sfc_subplugins() {
 	$options = get_option('sfc_options');
+	
+	global $sfc_plugin_list;
+	foreach ($sfc_plugin_list as $plugin => $plugin_file) {
+		if( !isset($options[$plugin]) ) $options[$plugin] = 'disabled';
+	}
+	
 	if ($options['appid']) {
 	?>
 	<p><label><input type="checkbox" name="sfc_options[plugin_login]" value="enable" <?php checked('enable', $options['plugin_login']); ?> /> <?php _e('Login with Facebook','sfc'); ?></label></p>
